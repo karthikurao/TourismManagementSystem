@@ -1,0 +1,295 @@
+﻿@model IEnumerable<TourismManagementSystem.ViewModels.BookingViewModel>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2 class="mb-4 text-center fw-bold text-primary">Admin Dashboard</h2>
+
+<!-- Quick Actions -->
+<div class="row mb-4 g-3">
+    <div class="col-md-3">
+        <a asp-controller="Package" asp-action="Create" class="card card-action text-decoration-none text-dark shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-plus-circle display-5 text-success mb-2"></i>
+                <h6 class="fw-bold">Add New Package</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-action="Users" class="card card-action text-decoration-none text-dark shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-people display-5 text-info mb-2"></i>
+                <h6 class="fw-bold">Manage Users</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-action="Packages" class="card card-action text-decoration-none text-dark shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-box-seam display-5 text-warning mb-2"></i>
+                <h6 class="fw-bold">Manage Packages</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="#bookings-table" class="card card-action text-decoration-none text-dark shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-list-check display-5 text-primary mb-2"></i>
+                <h6 class="fw-bold">All Bookings</h6>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #28a745, #218838);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 mb-1">Total Revenue</h6>
+                        <h3 class="fw-bold text-white mb-0">₹@(ViewBag.TotalRevenue ?? 0)</h3>
+                    </div>
+                    <i class="bi bi-currency-rupee display-6 text-white opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #ffc107, #e0a800);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 mb-1">Total Refunds</h6>
+                        <h3 class="fw-bold text-white mb-0">₹@(ViewBag.TotalRefunds ?? 0)</h3>
+                    </div>
+                    <i class="bi bi-arrow-return-left display-6 text-white opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #007bff, #0056b3);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 mb-1">Total Bookings</h6>
+                        <h3 class="fw-bold text-white mb-0">@(ViewBag.TotalBookings ?? 0)</h3>
+                    </div>
+                    <i class="bi bi-calendar-check display-6 text-white opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #17a2b8, #117a8b);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 mb-1">Active Bookings</h6>
+                        <h3 class="fw-bold text-white mb-0">@(ViewBag.ActiveBookings ?? 0)</h3>
+                    </div>
+                    <i class="bi bi-check-circle display-6 text-white opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Section -->
+<div class="row mb-5">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-bar-chart"></i> Bookings per Package
+            </div>
+            <div class="card-body">
+                @if (ViewBag.ChartLabels != null && ((string[])ViewBag.ChartLabels).Length > 0)
+                {
+                    <canvas id="bookingsChart" height="200"></canvas>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <p class="text-muted">No booking data available for chart</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <i class="bi bi-pie-chart"></i> Payment Status
+            </div>
+            <div class="card-body">
+                <canvas id="paymentChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bookings Table -->
+<h3 class="mb-3" id="bookings-table">All Bookings</h3>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Package</th>
+                <th>Location</th>
+                <th>Seats</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Amount</th>
+                <th>Refund</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>#@item.BookingId</td>
+                    <td>
+                        <div>
+                            <strong>@item.CustomerName</strong><br />
+                            <small class="text-muted">@item.Email</small>
+                        </div>
+                    </td>
+                    <td>@item.PackageName</td>
+                    <td>@item.Location</td>
+                    <td>@item.NumberOfSeats</td>
+                    <td>@item.BookingDate.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        @if (item.Status == "Booked")
+                        {
+                            <span class="badge bg-success">Booked</span>
+                        }
+                        else if (item.Status == "Cancelled")
+                        {
+                            <span class="badge bg-danger">Cancelled</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@item.Status</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.PaymentStatus == "Success")
+                        {
+                            <span class="badge bg-success">Paid</span>
+                        }
+                        else if (item.PaymentStatus == "Refunded")
+                        {
+                            <span class="badge bg-warning text-dark">Refunded</span>
+                        }
+                        else if (item.PaymentStatus == "Failed")
+                        {
+                            <span class="badge bg-danger">Failed</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@item.PaymentStatus</span>
+                        }
+                    </td>
+                    <td>₹@item.Amount</td>
+                    <td>
+                        @if (item.RefundAmount.HasValue)
+                        {
+                            <div>
+                                <strong class="text-warning">₹@item.RefundAmount.Value.ToString("N0")</strong><br>
+                                <small class="text-muted">Fee: ₹@item.CancellationFee.ToString("N0")</small>
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="BookingDetails" asp-route-id="@item.BookingId" 
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center">
+        <h4>No bookings found</h4>
+        <p>Bookings will appear here once customers start making reservations.</p>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Bookings per Package Chart
+        @if (ViewBag.ChartLabels != null && ((string[])ViewBag.ChartLabels).Length > 0)
+        {
+            <text>
+            var ctx1 = document.getElementById('bookingsChart').getContext('2d');
+            var bookingsChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.ChartLabels)),
+                    datasets: [{
+                        label: 'Number of Bookings',
+                        data: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.ChartData)),
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            </text>
+        }
+
+        // Payment Status Distribution Chart
+        var ctx2 = document.getElementById('paymentChart').getContext('2d');
+        var paymentChart = new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Paid', 'Refunded', 'Failed', 'Not Paid'],
+                datasets: [{
+                    data: [
+                        @(ViewBag.PaidCount ?? 0),
+                        @(ViewBag.RefundedCount ?? 0),
+                        @(ViewBag.FailedCount ?? 0),
+                        @(ViewBag.NotPaidCount ?? 0)
+                    ],
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+}

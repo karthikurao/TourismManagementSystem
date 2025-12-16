@@ -1,0 +1,265 @@
+﻿@model IEnumerable<Tourism.DataAccess.Models.Package>
+
+@{
+    ViewData["Title"] = "Welcome to Tourism Portal";
+}
+
+<div class="hero-section text-center d-flex align-items-center justify-content-center">
+    <div class="overlay"></div>
+    <div class="content hero-glass p-5">
+        <h1 class="display-3 fw-bold mb-3 text-gradient">Find Your Next Adventure</h1>
+        <p class="lead mb-4 text-white-50">Discover packages, book trips, and explore the world with us</p>
+        <form method="get" asp-controller="Package" asp-action="Search" class="row g-2 justify-content-center mt-4">
+            <div class="col-md-3">
+                <input type="text" name="location" class="form-control form-control-lg" placeholder="Where to?" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="minPrice" class="form-control form-control-lg" placeholder="Min Price" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="maxPrice" class="form-control form-control-lg" placeholder="Max Price" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100">Search</button>
+            </div>
+        </form>
+        <div class="mt-4">
+            <a asp-controller="Package" asp-action="Index" class="btn btn-outline-light btn-lg me-3">
+                <i class="bi bi-box-seam"></i> Browse All Packages
+            </a>
+            @if (!User.Identity!.IsAuthenticated)
+            {
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-light btn-lg">
+                    <i class="bi bi-person-plus"></i> Get Started
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h2 class="text-center fw-bold mb-4">Featured Packages</h2>
+    
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var package in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-lg border-0 package-card h-100">
+                        <div class="card-img-container">
+                            <img src="@(string.IsNullOrEmpty(package.ImageUrl) ? "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80" : package.ImageUrl)" 
+                                 class="card-img-top" alt="@package.Name">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold mb-2">@package.Name</h5>
+                            <p class="card-text text-muted mb-2">
+                                <i class="bi bi-geo-alt text-primary"></i> @package.Location
+                            </p>
+                            <div class="card-description">
+                                <p class="card-text description-text">
+                                    @(package.Description.Length > 120 ? package.Description.Substring(0, 120) + "..." : package.Description)
+                                </p>
+                            </div>
+                            <div class="card-details mt-auto">
+                                <p class="fw-bold text-success mb-2 fs-5">₹@package.Price per person</p>
+                                <div class="row text-center mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i><br>
+                                            @package.StartDate.ToString("MMM dd") - @package.EndDate.ToString("MMM dd")
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">
+                                            <i class="bi bi-people"></i><br>
+                                            @package.AvailableSeats seats left
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <a asp-controller="Package" asp-action="Details" asp-route-id="@package.PackageId" 
+                                       class="btn btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View Details
+                                    </a>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <a asp-controller="Booking" asp-action="Create" asp-route-id="@package.PackageId" 
+                                           class="btn btn-primary">
+                                            <i class="bi bi-calendar-plus"></i> Book Now
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <div class="card bg-light p-5">
+                <h4>No packages available at the moment</h4>
+                <p class="text-muted">Check back later for amazing travel packages!</p>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Package" asp-action="Create" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Add First Package
+                    </a>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a asp-controller="Package" asp-action="Index" class="btn btn-primary btn-lg">
+            <i class="bi bi-arrow-right"></i> View All Packages
+        </a>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="bg-light py-5 mt-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Why Choose Us?</h2>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="bi bi-shield-check display-1 text-success"></i>
+                </div>
+                <h4>Secure Booking</h4>
+                <p class="text-muted">Safe and secure payment processing with instant confirmation</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="bi bi-headset display-1 text-primary"></i>
+                </div>
+                <h4>24/7 Support</h4>
+                <p class="text-muted">Round-the-clock customer support for all your travel needs</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon mb-3">
+                    <i class="bi bi-star display-1 text-warning"></i>
+                </div>
+                <h4>Best Prices</h4>
+                <p class="text-muted">Competitive pricing with no hidden charges guaranteed</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        position: relative;
+        height: 80vh;
+        background: linear-gradient(120deg, #1b6ec2 0%, #17a2b8 100%), url('https://source.unsplash.com/1600x800/?travel,landscape') no-repeat center center/cover;
+    }
+    .hero-section .overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(27,110,194,0.55);
+        z-index: 1;
+    }
+    .hero-section .content.hero-glass {
+        position: relative;
+        z-index: 2;
+        background: rgba(255,255,255,0.15);
+        border-radius: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.20);
+        border: 2px solid rgba(255,255,255,0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .text-gradient {
+        background: linear-gradient(90deg, #fff 60%, #ffc107 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+    
+    /* Fixed height package cards */
+    .package-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        min-height: 500px; /* Ensures consistent minimum height */
+    }
+    
+    .package-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+    
+    .card-img-container {
+        height: 220px;
+        overflow: hidden;
+        border-radius: 18px 18px 0 0;
+    }
+    
+    .package-card .card-img-top {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .package-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    
+    /* Fixed height for card body with flex layout */
+    .package-card .card-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    /* Description container with fixed height */
+    .card-description {
+        height: 60px; /* Fixed height for description area */
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+    
+    .description-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #6c757d;
+        margin: 0;
+    }
+    
+    /* Card details at bottom */
+    .card-details {
+        margin-top: auto;
+    }
+    
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .package-card {
+            min-height: 450px;
+        }
+        
+        .card-img-container {
+            height: 180px;
+        }
+        
+        .card-description {
+            height: 50px;
+        }
+    }
+    
+    @@media (max-width: 576px) {
+        .package-card {
+            min-height: 400px;
+        }
+        
+        .card-img-container {
+            height: 160px;
+        }
+    }
+</style>

@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<!-- Hero Section -->
+<div class="row align-items-center py-5">
+    <div class="col-md-6">
+        <h1 class="display-4 fw-bold text-primary">Get in Touch</h1>
+        <p class="lead text-muted">We're here to help you plan your perfect trip. Reach out to us for any queries or assistance.</p>
+    </div>
+    <div class="col-md-6 text-center">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=80" 
+             alt="Contact Us" class="img-fluid rounded shadow" />
+    </div>
+</div>
+
+<div class="row my-5">
+    <!-- Contact Form -->
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="bi bi-envelope"></i> Send us a Message</h3>
+            </div>
+            <div class="card-body">
+                <form id="contactForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <select class="form-select" id="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="booking">Booking Support</option>
+                            <option value="complaint">Complaint</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea class="form-control" id="message" rows="5" required placeholder="Tell us how we can help you..."></textarea>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send"></i> Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact Information -->
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Contact Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6><i class="bi bi-envelope text-primary"></i> Email</h6>
+                    <p><a href="mailto:support@tourismportal.com">support@tourismportal.com</a></p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="bi bi-telephone text-success"></i> Phone</h6>
+                    <p><a href="tel:+919876543210">+91-98765-43210</a></p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="bi bi-whatsapp text-success"></i> WhatsApp</h6>
+                    <p><a href="https://wa.me/919876543210" target="_blank">+91-98765-43210</a></p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="bi bi-clock text-warning"></i> Business Hours</h6>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM<br>
+                       Saturday: 10:00 AM - 4:00 PM<br>
+                       Sunday: Closed</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Visit Our Office</h5>
+            </div>
+            <div class="card-body">
+                <address class="mb-3">
+                    <strong>Tourism Management System</strong><br>
+                    123 Travel Street<br>
+                    Tourism District<br>
+                    City, State 560001<br>
+                    India
+                </address>
+                
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i> 
+                        Office visits are by appointment only. Please call ahead to schedule a meeting.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="row my-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        How do I book a package?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Browse our packages, select your preferred one, click "Book Now", fill in your details, and complete the payment. You'll receive a confirmation email immediately.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                        What is your cancellation policy?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Cancellations made 7+ days before departure receive 85% refund. Cancellations made within 7 days are subject to a 50% cancellation fee.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                        Is travel insurance included?
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Travel insurance is not included in our base packages but is highly recommended. We can help you purchase suitable travel insurance at competitive rates.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show success message
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalContent = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(function() {
+                alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+                form.reset();
+                submitBtn.innerHTML = originalContent;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+    </script>
+}

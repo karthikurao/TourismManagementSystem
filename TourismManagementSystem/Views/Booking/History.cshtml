@@ -1,0 +1,96 @@
+﻿@model IEnumerable<TourismManagementSystem.ViewModels.BookingViewModel>
+
+@{
+    ViewData["Title"] = "My Trips";
+}
+
+<h2 class="mb-4">My Trips</h2>
+
+<div class="row">
+    @if (!Model.Any())
+    {
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-calendar-x"></i> You have no bookings yet.
+                <a class="btn btn-primary ms-2" asp-controller="Package" asp-action="Index">Browse Packages</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="row g-0">
+                        <!-- Left: Image -->
+                        <div class="col-md-4">
+                            <img src="@item.ImageUrl" class="img-fluid h-100" alt="@item.PackageName" style="object-fit: cover;" />
+                        </div>
+
+                        <!-- Right: Details -->
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">@item.PackageName</h5>
+                                <p class="text-muted mb-1"><i class="bi bi-geo-alt"></i> @item.Location</p>
+                                <p class="mb-1"><strong>Seats:</strong> @item.NumberOfSeats</p>
+                                <p class="mb-1"><strong>Date:</strong> @item.BookingDate.ToShortDateString()</p>
+
+                                <p>
+                                    <strong>Status:</strong>
+                                    @if (item.Status == "Booked")
+                                    {
+                                        <span class="badge bg-success">Booked</span>
+                                    }
+                                    else if (item.Status == "Cancelled")
+                                    {
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@item.Status</span>
+                                    }
+                                </p>
+
+                                <p>
+                                    <strong>Payment:</strong>
+                                    @if (item.PaymentStatus == "Success")
+                                    {
+                                        <span class="badge bg-success">Paid</span>
+                                    }
+                                    else if (item.PaymentStatus.StartsWith("Refunded"))
+                                    {
+                                        <span class="badge bg-warning text-dark">@item.PaymentStatus</span>
+                                    }
+                                    else if (item.PaymentStatus == "Failed")
+                                    {
+                                        <span class="badge bg-danger">Failed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Not Paid</span>
+                                    }
+                                </p>
+
+                                <h5 class="text-primary">₹@item.Amount</h5>
+                            </div>
+
+                            <div class="card-footer text-end">
+                                @if (item.Status == "Booked")
+                                {
+                                    <form asp-action="Cancel" asp-route-id="@item.BookingId" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">No actions available</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

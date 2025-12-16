@@ -1,0 +1,157 @@
+@model TourismManagementSystem.ViewModels.PaymentViewModel
+@{
+    ViewData["Title"] = "Payment Checkout";
+}
+
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-credit-card"></i> Complete Your Payment
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Booking Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <img src="@Model.PackageImageUrl" alt="@Model.PackageName" class="img-fluid rounded" style="height: 200px; object-fit: cover; width: 100%;">
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="fw-bold text-primary">@Model.PackageName</h5>
+                            <p class="text-muted mb-1">
+                                <i class="bi bi-geo-alt"></i> @Model.Location
+                            </p>
+                            <p class="mb-1">
+                                <strong>Customer:</strong> @Model.CustomerName
+                            </p>
+                            <p class="mb-1">
+                                <strong>Email:</strong> @Model.Email
+                            </p>
+                            <p class="mb-1">
+                                <strong>Phone:</strong> @Model.PhoneNumber
+                            </p>
+                            <p class="mb-1">
+                                <strong>Seats:</strong> @Model.NumberOfSeats
+                            </p>
+                            <p class="mb-1">
+                                <strong>Price per seat:</strong> <span class="currency-symbol">&#8377;@Model.PricePerSeat.ToString("N2")</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Payment Summary -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold">Payment Summary</h6>
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal (@Model.NumberOfSeats seat(s)):</span>
+                                <span class="currency-symbol">&#8377;@Model.TotalAmount.ToString("N2")</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Taxes & Fees:</span>
+                                <span class="currency-symbol">&#8377;0.00</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold h5">
+                                <span>Total Amount:</span>
+                                <span class="text-success currency-symbol">&#8377;@Model.TotalAmount.ToString("N2")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="bi bi-shield-check"></i> Secure Payment with Stripe
+                        </h6>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Test Mode:</strong> Use test card number 4242 4242 4242 4242 with any future expiry date and any 3-digit CVC for testing.
+                        </div>
+                        
+                        <!-- Stripe Payment Button -->
+                        <div class="d-grid gap-2">
+                            <button id="checkout-button" class="btn btn-success btn-lg">
+                                <i class="bi bi-credit-card"></i> Pay <span class="currency-symbol">&#8377;@Model.TotalAmount.ToString("N2")</span> with Card
+                            </button>
+                            <a href="@Url.Action("MyBookings", "Booking")" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to My Bookings
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Security Features -->
+                    <div class="row text-center mt-4">
+                        <div class="col-md-4">
+                            <i class="bi bi-shield-check display-6 text-success"></i>
+                            <p class="small text-muted mt-2">SSL Encrypted</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-credit-card display-6 text-primary"></i>
+                            <p class="small text-muted mt-2">Secure Payments</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-check-circle display-6 text-info"></i>
+                            <p class="small text-muted mt-2">Instant Confirmation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe JavaScript -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Initialize Stripe
+    const stripe = Stripe('@ViewBag.StripePublishableKey');
+    
+    document.getElementById('checkout-button').addEventListener('click', function () {
+        // Disable the button to prevent multiple clicks
+        this.disabled = true;
+        this.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Processing...';
+        
+        // Create checkout session
+        fetch('@Url.Action("CreateCheckoutSession", "Payment")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: 'bookingId=@Model.BookingId'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirect to Stripe Checkout
+                return stripe.redirectToCheckout({
+                    sessionId: data.sessionId
+                });
+            } else {
+                throw new Error(data.error || 'Payment session creation failed');
+            }
+        })
+        .then(result => {
+            if (result.error) {
+                throw new Error(result.error.message);
+            }
+        })
+        .catch(error => {
+            console.error('Payment error:', error);
+            alert('Payment initialization failed: ' + error.message);
+            
+            // Re-enable the button with correct symbol
+            const button = document.getElementById('checkout-button');
+            button.disabled = false;
+            button.innerHTML = '<i class="bi bi-credit-card"></i> Pay <span class="currency-symbol">&#8377;@Model.TotalAmount.ToString("N2")</span> with Card';
+        });
+    });
+</script>
+
+@{
+    // Add anti-forgery token for AJAX requests
+}
+@Html.AntiForgeryToken()@Html.AntiForgeryToken()

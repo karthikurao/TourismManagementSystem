@@ -1,0 +1,212 @@
+﻿@model TourismManagementSystem.ViewModels.BookingViewModel
+
+@{
+    ViewData["Title"] = "Booking Confirmation";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h2><i class="bi bi-check-circle-fill"></i> Booking Confirmed!</h2>
+                    <p class="mb-0">Your payment has been processed successfully</p>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <strong>Congratulations!</strong> Your booking has been confirmed and seats have been reserved.
+                    </div>
+
+                    <!-- Booking Details Section -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="fw-bold text-primary">
+                                <i class="bi bi-info-circle"></i> Booking Details
+                            </h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Booking ID:</strong></td>
+                                    <td>#@Model.BookingId</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Package:</strong></td>
+                                    <td>@Model.PackageName</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Location:</strong></td>
+                                    <td>@Model.Location</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Number of Seats:</strong></td>
+                                    <td>@Model.NumberOfSeats</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Booking Date:</strong></td>
+                                    <td>@Model.BookingDate.ToString("MMM dd, yyyy")</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold text-primary">
+                                <i class="bi bi-person"></i> Customer Details
+                            </h5>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td>@Model.CustomerName</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>@Model.Email</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone:</strong></td>
+                                    <td>@Model.PhoneNumber</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Amount:</strong></td>
+                                    <td class="text-success fw-bold">₹@Model.Amount.ToString("N2")</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Payment Status:</strong></td>
+                                    <td>
+                                        @if (Model.PaymentStatus == "Success")
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Paid
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">@Model.PaymentStatus</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Next Steps -->
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-lightbulb"></i> What's Next?</h6>
+                        <ul class="mb-0">
+                            <li>A confirmation email has been sent to <strong>@Model.Email</strong></li>
+                            <li>You can download your receipt below</li>
+                            <li>View all your bookings in "My Bookings"</li>
+                            <li>For any queries, contact our support team</li>
+                        </ul>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a asp-action="MyBookings" class="btn btn-primary">
+                            <i class="bi bi-calendar-check"></i> View My Bookings
+                        </a>
+                        
+                        @if (Model.PaymentStatus == "Success" && Model.PaymentId.HasValue)
+                        {
+                            <a asp-controller="Payment" asp-action="Receipt" asp-route-id="@Model.PaymentId" 
+                               class="btn btn-outline-info">
+                                <i class="bi bi-receipt"></i> View Receipt
+                            </a>
+                            <button onclick="downloadStripeReceiptFromConfirmation(@Model.PaymentId)" 
+                                    class="btn btn-success">
+                                <i class="bi bi-download"></i> Download Stripe Receipt
+                            </button>
+                        }
+                        
+                        <a asp-controller="Package" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-box-seam"></i> Browse More Packages
+                        </a>
+                        <button onclick="window.print()" class="btn btn-outline-dark">
+                            <i class="bi bi-printer"></i> Print Confirmation
+                        </button>
+                    </div>
+                </div>
+                <div class="card-footer text-center text-muted">
+                    <small>
+                        <i class="bi bi-shield-check"></i> Your booking is secured and confirmed
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function downloadStripeReceiptFromConfirmation(paymentId) {
+            // Show loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            const originalClass = button.className;
+            button.disabled = true;
+            button.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Loading...';
+            button.className = 'btn btn-secondary';
+            
+            // Get the receipt URL via AJAX
+            fetch(`/Payment/GetStripeReceiptUrl/${paymentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success feedback
+                        button.innerHTML = '<i class="bi bi-check-circle me-2"></i>Opening Receipt...';
+                        button.className = 'btn btn-success';
+                        
+                        // Open Stripe receipt in new tab
+                        window.open(data.receiptUrl, '_blank');
+                        
+                        // Show toast notification
+                        showToast('Stripe receipt opened successfully!', 'success');
+                        
+                        // Restore button after delay
+                        setTimeout(() => {
+                            button.disabled = false;
+                            button.innerHTML = originalText;
+                            button.className = originalClass;
+                        }, 3000);
+                    } else {
+                        showToast('Error: ' + (data.error || 'Could not retrieve Stripe receipt'), 'error');
+                        throw new Error(data.error || 'Could not retrieve receipt');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Error downloading receipt. Please try again.', 'error');
+                    
+                    // Restore button state immediately on error
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                    button.className = originalClass;
+                });
+        }
+
+        function showToast(message, type = 'info') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast-notification');
+            existingToasts.forEach(toast => toast.remove());
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast-notification alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} alert-dismissible fade show position-fixed`;
+            toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            
+            const icon = type === 'success' ? 'bi-check-circle' : type === 'error' ? 'bi-exclamation-triangle' : 'bi-info-circle';
+            
+            toast.innerHTML = `
+                <i class="bi ${icon}"></i> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 4000);
+        }
+    </script>
+}

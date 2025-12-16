@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+}
+
+<!-- Hero Section -->
+<div class="row align-items-center py-5">
+    <div class="col-md-6">
+        <h1 class="display-4 fw-bold text-primary">About Tourism Portal</h1>
+        <p class="lead text-muted">Your trusted partner in creating unforgettable travel experiences since our inception.</p>
+    </div>
+    <div class="col-md-6 text-center">
+        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=500&q=80" 
+             alt="Travel Experience" class="img-fluid rounded shadow" />
+    </div>
+</div>
+
+<!-- About Content -->
+<div class="row my-5">
+    <div class="col-md-12">
+        <h2 class="text-center mb-4">Our Story</h2>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                        <i class="bi bi-globe2 display-1 text-primary mb-3"></i>
+                        <h4>Global Reach</h4>
+                        <p>We offer travel packages to destinations across the globe, ensuring you experience the best of every location.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                        <i class="bi bi-shield-check display-1 text-success mb-3"></i>
+                        <h4>Trust & Safety</h4>
+                        <p>Your safety and satisfaction are our top priorities. We ensure all our packages meet the highest safety standards.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                        <i class="bi bi-heart display-1 text-danger mb-3"></i>
+                        <h4>Passion for Travel</h4>
+                        <p>Our team is passionate about travel and committed to creating memories that will last a lifetime.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mission & Vision -->
+<div class="row my-5 bg-light py-5 rounded">
+    <div class="col-md-6">
+        <h3 class="fw-bold mb-3">Our Mission</h3>
+        <p>To make travel accessible and enjoyable for everyone by providing carefully curated packages, exceptional customer service, and competitive pricing.</p>
+        
+        <h3 class="fw-bold mb-3 mt-4">Our Vision</h3>
+        <p>To be the leading tourism management platform that connects travelers with their dream destinations while promoting sustainable and responsible tourism.</p>
+    </div>
+    <div class="col-md-6">
+        <h3 class="fw-bold mb-3">Why Choose Us?</h3>
+        <ul class="list-unstyled">
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Expert travel planning and guidance</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Competitive and transparent pricing</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> 24/7 customer support</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Secure booking and payment system</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Flexible cancellation policies</li>
+            <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Local expertise and partnerships</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Team Section -->
+<div class="row my-5">
+    <div class="col-12 text-center">
+        <h2 class="mb-4">Meet Our Team</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <div class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <i class="bi bi-person-fill text-white fs-1"></i>
+                        </div>
+                        <h5>Karthik Rao</h5>
+                        <p class="text-muted">Founder & CEO</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <div class="bg-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <i class="bi bi-person-fill text-white fs-1"></i>
+                        </div>
+                        <h5>Travel Manager</h5>
+                        <p class="text-muted">Operations Head</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 text-center">
+                    <div class="card-body">
+                        <div class="bg-info rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                            <i class="bi bi-person-fill text-white fs-1"></i>
+                        </div>
+                        <h5>Support Team</h5>
+                        <p class="text-muted">Customer Relations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="row my-5 text-center">
+    <div class="col-12">
+        <div class="bg-primary text-white p-5 rounded">
+            <h3 class="mb-3">Ready to Start Your Journey?</h3>
+            <p class="mb-4">Explore our amazing packages and book your next adventure today!</p>
+            <a asp-controller="Package" asp-action="Index" class="btn btn-light btn-lg me-3">
+                <i class="bi bi-box-seam"></i> View Packages
+            </a>
+            <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-envelope"></i> Contact Us
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,177 @@
+﻿@model Tourism.DataAccess.Models.Package
+
+@{
+    ViewData["Title"] = "Create Package";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Package</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                        {
+                            <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                        }
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Name" class="form-control" placeholder="Package Name" required />
+                                    <label asp-for="Name">Package Name</label>
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Location" class="form-control" placeholder="Location" required />
+                                    <label asp-for="Location">Location</label>
+                                    <span asp-validation-for="Location" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Package Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter detailed description of the package..." required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                            <div class="form-text">Provide a detailed description of what's included in this package</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" placeholder="Price" required />
+                                    <label asp-for="Price">Price (₹)</label>
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="StartDate" class="form-control" type="date" 
+                                           value="@(Model.StartDate == DateTime.MinValue ? "" : Model.StartDate.ToString("yyyy-MM-dd"))" 
+                                           required />
+                                    <label asp-for="StartDate">Start Date</label>
+                                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="EndDate" class="form-control" type="date" 
+                                           value="@(Model.EndDate == DateTime.MinValue ? "" : Model.EndDate.ToString("yyyy-MM-dd"))" 
+                                           required />
+                                    <label asp-for="EndDate">End Date</label>
+                                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="AvailableSeats" class="form-control" type="number" min="1" max="100" placeholder="Available Seats" required />
+                                    <label asp-for="AvailableSeats">Available Seats</label>
+                                    <span asp-validation-for="AvailableSeats" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="ImageUrl" class="form-control" type="url" placeholder="Image URL" />
+                                    <label asp-for="ImageUrl">Package Image URL (Optional)</label>
+                                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                                    <div class="form-text">Enter a valid image URL for the package</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a asp-action="Index" class="btn btn-secondary me-md-2">
+                                        <i class="bi bi-arrow-left"></i> Back to List
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle"></i> Create Package
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            const startDateInput = document.querySelector('input[name="StartDate"]');
+            const endDateInput = document.querySelector('input[name="EndDate"]');
+            
+            startDateInput.setAttribute('min', today);
+            
+            // Update end date minimum when start date changes
+            startDateInput.addEventListener('change', function() {
+                endDateInput.setAttribute('min', this.value);
+                if (endDateInput.value && endDateInput.value <= this.value) {
+                    endDateInput.value = '';
+                    // Show helper message
+                    const helpText = document.createElement('div');
+                    helpText.className = 'form-text text-warning';
+                    helpText.textContent = 'End date must be after the start date.';
+                    helpText.id = 'date-help';
+                    
+                    // Remove existing help text
+                    const existingHelp = document.getElementById('date-help');
+                    if (existingHelp) existingHelp.remove();
+                    
+                    endDateInput.parentNode.appendChild(helpText);
+                    
+                    // Remove help text after 3 seconds
+                    setTimeout(() => {
+                        const helpElement = document.getElementById('date-help');
+                        if (helpElement) helpElement.remove();
+                    }, 3000);
+                }
+            });
+
+            // Character counter for description
+            const descriptionTextarea = document.querySelector('textarea[name="Description"]');
+            const maxLength = 1000; // Updated to match model validation
+            
+            function updateCharCount() {
+                const current = descriptionTextarea.value.length;
+                const remaining = maxLength - current;
+                let countDiv = document.getElementById('descCharCount');
+                
+                if (!countDiv) {
+                    countDiv = document.createElement('div');
+                    countDiv.id = 'descCharCount';
+                    countDiv.className = 'form-text';
+                    descriptionTextarea.parentNode.appendChild(countDiv);
+                }
+                
+                countDiv.textContent = `${current}/${maxLength} characters`;
+                countDiv.className = remaining < 100 ? 'form-text text-warning' : 'form-text text-muted';
+                
+                if (remaining < 0) {
+                    countDiv.className = 'form-text text-danger';
+                    countDiv.textContent = `${current}/${maxLength} characters - Exceeded by ${Math.abs(remaining)} characters`;
+                }
+            }
+            
+            descriptionTextarea.addEventListener('input', updateCharCount);
+            updateCharCount();
+        });
+    </script>
+}

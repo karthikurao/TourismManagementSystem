@@ -1,0 +1,149 @@
+﻿@model Tourism.DataAccess.Models.Booking
+
+@{
+    ViewData["Title"] = "Book Your Trip";
+}
+
+<div class="container">
+    <!-- Display error messages prominently -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Left: Booking Form -->
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="mb-3">
+                        <i class="bi bi-person-fill"></i> Traveler Details
+                    </h3>
+                    
+                    <form asp-action="Create" method="post" id="bookingForm" novalidate>
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Hidden fields -->
+                        <input type="hidden" asp-for="PackageId" />
+                        <input type="hidden" name="BookingDate" value="@DateTime.Now" />
+                        <input type="hidden" name="Status" value="Pending" />
+
+                        <!-- Validation Summary -->
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                        {
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i> <strong>Please fix the following errors:</strong>
+                                <ul class="mb-0 mt-2">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <!-- Customer Name -->
+                        <div class="mb-3">
+                            <label asp-for="CustomerName" class="form-label">
+                                <i class="bi bi-person"></i> Full Name *
+                            </label>
+                            <input asp-for="CustomerName" class="form-control form-control-lg @(ViewData.ModelState["CustomerName"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                   placeholder="Enter your full name" required minlength="2" maxlength="100" />
+                            <span asp-validation-for="CustomerName" class="invalid-feedback"></span>
+                            <div class="form-text">Enter your full name as it appears on your ID</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email Address *
+                            </label>
+                            <input asp-for="Email" type="email" class="form-control form-control-lg @(ViewData.ModelState["Email"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                   placeholder="your@example.com" required maxlength="100" 
+                                   title="Please enter a valid email address" />
+                            <span asp-validation-for="Email" class="invalid-feedback"></span>
+                            <div class="form-text">We'll send your booking confirmation to this email</div>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">
+                                <i class="bi bi-telephone"></i> Phone Number *
+                            </label>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control form-control-lg @(ViewData.ModelState["PhoneNumber"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                   placeholder="9876543210" required minlength="10" maxlength="15" 
+                                   title="Please enter a valid phone number (10-15 digits)" />
+                            <span asp-validation-for="PhoneNumber" class="invalid-feedback"></span>
+                            <div class="form-text">Enter your mobile number (digits only)</div>
+                        </div>
+
+                        <!-- Number of Seats -->
+                        <div class="mb-3">
+                            <label asp-for="NumberOfSeats" class="form-label">
+                                <i class="bi bi-people"></i> Number of Seats *
+                            </label>
+                            <input asp-for="NumberOfSeats" type="number" class="form-control form-control-lg @(ViewData.ModelState["NumberOfSeats"]?.Errors.Count > 0 ? "is-invalid" : "")" 
+                                   min="1" max="10" value="1" id="seatInput" required />
+                            <span asp-validation-for="NumberOfSeats" class="invalid-feedback"></span>
+                            <div class="form-text">Maximum 10 seats per booking</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg" id="confirmBtn">
+                                <i class="bi bi-check-circle"></i> Confirm Booking
+                            </button>
+                        </div>
+
+                        <!-- Debug Information -->
+                        <div class="mt-3 p-2 bg-light rounded">
+                            <small class="text-muted">
+                                <strong>Debug Info:</strong> Package ID = @Model.PackageId
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Package Summary -->
+        <div class="col-md-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <img src="@(ViewBag.PackageImage ?? "/images/default-package.jpg")" class="card-img-top" alt="Package image" 
+                     style="height:200px; object-fit:cover;" 
+                     onerror="this.src='https://via.placeholder.com/400x200?text=Package+Image'" />
+                <div class="card-body">
+                    <h5 class="card-title">@(ViewBag.PackageName ?? "Package")</h5>
+                    <p class="text-muted">
+                        <i class="bi bi-geo-alt"></i> @(ViewBag.PackageLocation ?? "Location")
+                    </p>
+                    <hr />
+                    <div class="d-flex justify-content-between">
+                        <span>Price per Seat:</span>
+                        <span class="fw-bold">₹<span id="pricePerSeat">@(ViewBag.PackagePrice ?? 0)</span></span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Seats Selected:</span>
+                        <span class="fw-bold"><span id="seatCount">@Model.NumberOfSeats</span></span>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between">
+                        <span class="h5">Total Amount:</span>
+                        <span class="h5 text-success">₹<span id="totalAmount">@(Convert.ToDecimal(ViewBag.PackagePrice ?? 0) * Model.NumberOfSeats)</span></span>
+                    </div>
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i> All taxes included
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/booking.js"></script>
+}

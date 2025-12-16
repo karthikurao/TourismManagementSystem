@@ -1,0 +1,235 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+html, body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f8fafc;
+  color: #222;
+}
+
+/* Enhanced currency symbol styling for better rendering */
+.currency-symbol, 
+.price-amount,
+.payment-amount {
+  font-family: 'Segoe UI', 'Noto Sans', 'Arial Unicode MS', 'Lucida Sans Unicode', 'DejaVu Sans', Arial, sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: inherit;
+  display: inline-block;
+}
+
+/* Fallback for rupee symbol - multiple approaches */
+.rupee-symbol {
+  font-family: 'Segoe UI', 'Noto Sans', 'Arial Unicode MS', 'Lucida Sans Unicode', Arial, sans-serif;
+}
+
+.rupee-symbol::before {
+  content: "?";
+  font-family: 'Segoe UI', 'Noto Sans', 'Arial Unicode MS', 'Lucida Sans Unicode', Arial, sans-serif;
+}
+
+/* Alternative approach using CSS content */
+.currency-inr::before {
+  content: "\20B9"; /* Unicode for Indian Rupee */
+  font-family: 'Segoe UI', 'Noto Sans', 'Arial Unicode MS', 'Lucida Sans Unicode', Arial, sans-serif;
+}
+
+/* For browsers that don't support the rupee symbol */
+@supports not (content: "?") {
+  .currency-symbol::before {
+    content: "Rs. ";
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+}
+
+/* Font preload for better performance */
+@font-face {
+  font-family: 'Rupee Foradian';
+  src: url('data:font/woff2;base64,') format('woff2');
+  font-display: fallback;
+}
+
+/* Navbar styling with proper z-index */
+.navbar {
+  background: linear-gradient(90deg, #1b6ec2 60%, #17a2b8 100%) !important;
+  box-shadow: 0 2px 8px rgba(27,110,194,0.08);
+  position: relative;
+  z-index: 1050; /* Ensure navbar is above other content */
+}
+
+.navbar .navbar-brand, .navbar .nav-link {
+  color: #fff !important;
+  font-weight: 500;
+}
+
+.navbar .nav-link.btn {
+  margin-left: 0.5rem;
+  color: #fff !important;
+  background: #ffc107;
+  border-radius: 20px;
+  padding: 0.3rem 1.2rem;
+  transition: background 0.2s;
+}
+
+.navbar .nav-link.btn:hover {
+  background: #ff9800;
+}
+
+/* Dropdown menu styling with proper z-index */
+.navbar .dropdown-menu {
+  z-index: 1060; /* Higher than navbar */
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  margin-top: 0.5rem;
+}
+
+.navbar .dropdown-toggle::after {
+  color: #fff;
+}
+
+/* Fix for sticky elements conflicting with navbar */
+.sticky-top {
+  z-index: 1020; /* Lower than navbar dropdown */
+}
+
+/* Package card images with proper z-index */
+.package-card {
+  position: relative;
+  z-index: 1; /* Lower than navbar */
+}
+
+.package-card img {
+  position: relative;
+  z-index: 1;
+}
+
+/* Card styling */
+.card {
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(27,110,194,0.07);
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure card images don't overlap navigation */
+.card-img-top {
+  border-radius: 18px 18px 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Button styling */
+.btn-primary, .btn-success, .btn-outline-primary {
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(27,110,194,0.08);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #1b6ec2 60%, #17a2b8 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #1861ac 60%, #138496 100%);
+}
+
+/* Footer styling */
+footer.footer {
+  background: #1b6ec2;
+  color: #fff;
+}
+
+footer.footer a { 
+  color: #ffc107; 
+}
+
+/* Hero section overlay for Home */
+.hero-section {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section .overlay {
+  background: rgba(27,110,194,0.55);
+}
+
+/* Hero section form enhancements */
+.hero-section .form-control {
+  min-height: 56px;
+  font-size: 1.15rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 1.5rem;
+}
+
+.hero-section .btn.btn-primary {
+  min-height: 56px;
+  font-size: 1.15rem;
+  border-radius: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(27,110,194,0.12);
+}
+
+.hero-section .row.g-2 > [class^='col-'] {
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .hero-section .row.g-2 > [class^='col-'] {
+    margin-bottom: 0;
+  }
+}
+
+/* Icon styles */
+.bi {
+  vertical-align: -.125em;
+  margin-right: 0.25em;
+}
+
+/* Contact/About images */
+.contact-img, .about-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 16px rgba(27,110,194,0.12);
+}
+
+/* Fix for package detail pages */
+.card-img-overlay {
+  z-index: 2;
+}
+
+/* Ensure all modals are above everything else */
+.modal {
+  z-index: 1070;
+}
+
+/* Fix for package listing grid */
+.package-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  z-index: 10; /* Slightly higher when hovered but still below navbar */
+}

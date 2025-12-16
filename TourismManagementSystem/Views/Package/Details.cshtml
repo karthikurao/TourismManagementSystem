@@ -1,0 +1,154 @@
+﻿@model Tourism.DataAccess.Models.Package
+
+@{
+    ViewData["Title"] = @Model.Name;
+}
+
+<!-- Hero Banner -->
+<div class="card mb-4 shadow-sm border-0">
+    <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/default-package.jpg" : Model.ImageUrl)" 
+         class="card-img-top" alt="@Model.Name" style="height:350px; object-fit:cover;" />
+    <div class="card-img-overlay bg-dark bg-opacity-50 d-flex flex-column justify-content-end text-white p-4">
+        <h2 class="fw-bold">@Model.Name</h2>
+        <p class="mb-1"><i class="bi bi-geo-alt"></i> @Model.Location</p>
+        <h4 class="fw-bold text-warning">₹@Model.Price per person</h4>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left: Package Info -->
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4>Package Overview</h4>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4>Duration & Availability</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><strong>Duration:</strong> @Model.Duration days</li>
+                            <li><strong>Start Date:</strong> @Model.StartDate.ToString("MMM dd, yyyy")</li>
+                            <li><strong>End Date:</strong> @Model.EndDate.ToString("MMM dd, yyyy")</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><strong>Seats Available:</strong> @Model.AvailableSeats</li>
+                            <li><strong>Price per Person:</strong> ₹@Model.Price</li>
+                            <li><strong>Total Bookings:</strong> @Model.Bookings.Count()</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4>What's Included</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li><i class="bi bi-check-circle text-success"></i> Hotel accommodation</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Daily breakfast</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Guided sightseeing tours</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Airport transfers</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>What's Not Included</h5>
+                        <ul>
+                            <li><i class="bi bi-x-circle text-danger"></i> Airfare</li>
+                            <li><i class="bi bi-x-circle text-danger"></i> Personal expenses</li>
+                            <li><i class="bi bi-x-circle text-danger"></i> Travel insurance</li>
+                            <li><i class="bi bi-x-circle text-danger"></i> Meals not mentioned</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Booking Summary -->
+    <div class="col-md-4">
+        <div class="card shadow-sm sticky-top" style="top: 100px;">
+            <div class="card-body">
+                <h4>Book This Package</h4>
+                <div class="mb-3">
+                    <p><strong>Price:</strong> <span class="text-success fw-bold fs-5">₹@Model.Price per person</span></p>
+                    <p><strong>Duration:</strong> @Model.Duration days</p>
+                    <p><strong>Seats Left:</strong> 
+                        @if (Model.AvailableSeats > 10)
+                        {
+                            <span class="badge bg-success">@Model.AvailableSeats available</span>
+                        }
+                        else if (Model.AvailableSeats > 0)
+                        {
+                            <span class="badge bg-warning">Only @Model.AvailableSeats left!</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Sold Out</span>
+                        }
+                    </p>
+                </div>
+                
+                @if (ViewBag.IsAvailableForBooking == true && User.Identity!.IsAuthenticated)
+                {
+                    <a asp-controller="Booking" asp-action="Create" asp-route-id="@Model.PackageId"
+                       class="btn btn-primary w-100 btn-lg">
+                        <i class="bi bi-calendar-check"></i> Book Now
+                    </a>
+                }
+                else if (!User.Identity!.IsAuthenticated)
+                {
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle"></i>
+                        <p class="mb-2">Please log in to book this package</p>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <p class="mb-0">This package is not currently available for booking</p>
+                        @if (Model.AvailableSeats <= 0)
+                        {
+                            <small>Reason: Sold out</small>
+                        }
+                        else if (Model.StartDate <= DateTime.Today)
+                        {
+                            <small>Reason: Trip has already started or passed</small>
+                        }
+                    </div>
+                }
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <hr />
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.PackageId" class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-pencil"></i> Edit Package
+                        </a>
+                        <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-speedometer2"></i> Admin Dashboard
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to All Packages
+    </a>
+</div>

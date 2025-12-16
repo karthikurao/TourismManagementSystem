@@ -1,0 +1,108 @@
+﻿@model Tourism.DataAccess.Models.Package
+
+@{
+    ViewData["Title"] = "Delete Package";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="bi bi-trash"></i> Delete Package</h3>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.HasActiveBookings == true)
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Warning:</strong> This package has active bookings and cannot be deleted. 
+                            Please cancel all bookings first.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Are you sure you want to delete this package?</strong> This action cannot be undone.
+                        </div>
+                    }
+
+                    <!-- Package Preview -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/default-package.jpg" : Model.ImageUrl)" 
+                                 class="img-fluid rounded" alt="@Model.Name" style="height:200px; object-fit:cover; width:100%;" />
+                        </div>
+                        <div class="col-md-8">
+                            <h4>@Model.Name</h4>
+                            <p class="text-muted"><i class="bi bi-geo-alt"></i> @Model.Location</p>
+                            <p>@Model.Description</p>
+                            
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <strong>Price:</strong> ₹@Model.Price per person
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong>Available Seats:</strong> @Model.AvailableSeats
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-2">
+                                <div class="col-sm-6">
+                                    <strong>Start Date:</strong> @Model.StartDate.ToString("MMM dd, yyyy")
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong>End Date:</strong> @Model.EndDate.ToString("MMM dd, yyyy")
+                                </div>
+                            </div>
+                            
+                            <div class="mt-2">
+                                <strong>Duration:</strong> @Model.Duration days
+                            </div>
+                            
+                            @if (Model.Bookings.Any())
+                            {
+                                <div class="mt-3">
+                                    <strong>Total Bookings:</strong> @Model.Bookings.Count()
+                                    <br />
+                                    <strong>Active Bookings:</strong> @Model.Bookings.Count(b => b.Status == "Booked")
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to List
+                            </a>
+                            <a asp-action="Details" asp-route-id="@Model.PackageId" class="btn btn-outline-primary">
+                                <i class="bi bi-eye"></i> View Details
+                            </a>
+                        </div>
+                        
+                        @if (ViewBag.HasActiveBookings != true)
+                        {
+                            <form asp-action="Delete" method="post" class="d-inline">
+                                <input type="hidden" asp-for="PackageId" />
+                                <button type="submit" class="btn btn-danger" 
+                                        onclick="return confirm('Are you absolutely sure you want to delete this package? This action cannot be undone.')">
+                                    <i class="bi bi-trash"></i> Delete Package
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-danger" disabled>
+                                <i class="bi bi-lock"></i> Cannot Delete (Has Active Bookings)
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+@model TourismManagementSystem.ViewModels.BookingViewModel
+
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="bi bi-info-circle"></i> Booking Details #@Model.BookingId</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Package Information</h5>
+                            <hr />
+                            <p><strong>Package:</strong> @Model.PackageName</p>
+                            <p><strong>Location:</strong> @Model.Location</p>
+                            <p><strong>Price per Seat:</strong> ?@Model.Price.ToString("N2")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Booking Information</h5>
+                            <hr />
+                            <p><strong>Booking Date:</strong> @Model.BookingDate.ToString("MMM dd, yyyy")</p>
+                            <p><strong>Number of Seats:</strong> @Model.NumberOfSeats</p>
+                            <p><strong>Status:</strong> 
+                                @if (Model.Status == "Booked")
+                                {
+                                    <span class="badge bg-success">@Model.Status</span>
+                                }
+                                else if (Model.Status == "Cancelled")
+                                {
+                                    <span class="badge bg-danger">@Model.Status</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@Model.Status</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>Customer Information</h5>
+                            <hr />
+                            <p><strong>Name:</strong> @Model.CustomerName</p>
+                            <p><strong>Email:</strong> @Model.Email</p>
+                            <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Payment Information</h5>
+                            <hr />
+                            <p><strong>Total Amount:</strong> ?@Model.Amount.ToString("N2")</p>
+                            <p><strong>Payment Status:</strong> 
+                                @if (Model.PaymentStatus == "Success")
+                                {
+                                    <span class="badge bg-success">Paid</span>
+                                }
+                                else if (Model.PaymentStatus == "Refunded")
+                                {
+                                    <span class="badge bg-warning">Refunded</span>
+                                }
+                                else if (Model.PaymentStatus == "Failed")
+                                {
+                                    <span class="badge bg-danger">Failed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@Model.PaymentStatus</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5>Admin Actions</h5>
+                        <hr />
+                        <form asp-action="UpdateBookingStatus" method="post" class="d-inline">
+                            <input type="hidden" name="bookingId" value="@Model.BookingId" />
+                            <div class="row align-items-end">
+                                <div class="col-md-6">
+                                    <label for="status" class="form-label">Update Status:</label>
+                                    <select name="status" class="form-select">
+                                        <option value="Booked" selected="@(Model.Status == "Booked")">Booked</option>
+                                        <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Cancelled</option>
+                                        <option value="Completed" selected="@(Model.Status == "Completed")">Completed</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="bi bi-pencil"></i> Update Status
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <a asp-action="Dashboard" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <a asp-controller="Package" asp-action="Details" asp-route-id="@Model.PackageId" class="btn btn-outline-primary">
+                            <i class="bi bi-box"></i> View Package
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

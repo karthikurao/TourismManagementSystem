@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Tourism.DataAccess.Models.Package>
+
+@{
+    ViewData["Title"] = "Explore Packages";
+}
+
+<h2 class="mb-4">Explore Our Tour Packages</h2>
+
+<!-- Search/Filter Bar -->
+<form asp-action="Search" method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="location" class="form-control" placeholder="Search by Location" />
+    </div>
+    <div class="col-md-3">
+        <input type="number" name="minPrice" class="form-control" placeholder="Min Price" step="0.01" />
+    </div>
+    <div class="col-md-3">
+        <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" step="0.01" />
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+<!-- Package Cards Grid -->
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0 rounded-3">
+                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/default-package.jpg" : item.ImageUrl)" 
+                     class="card-img-top" alt="@item.Name" style="height:200px; object-fit:cover;" />
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text text-muted">
+                        <i class="bi bi-geo-alt"></i> @item.Location
+                    </p>
+                    <p class="fw-bold text-success">₹@item.Price per person</p>
+                    <p class="small text-muted">Duration: @item.Duration days</p>
+                    <p class="small text-muted">Seats Available: @item.AvailableSeats</p>
+
+                    <div class="mt-auto d-flex gap-2 justify-content-between">
+                        <a asp-action="Details" asp-route-id="@item.PackageId" class="btn btn-outline-secondary btn-sm flex-fill">View Details</a>
+                        @if (item.AvailableSeats > 0)
+                        {
+                            <a asp-controller="Booking" asp-action="Create" asp-route-id="@item.PackageId" class="btn btn-primary btn-sm flex-fill">Book Now</a>
+                        }
+                        else
+                        {
+                            <span class="btn btn-secondary btn-sm flex-fill disabled">Sold Out</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center">
+        <h4>No packages found</h4>
+        <p>Try adjusting your search criteria or browse all packages.</p>
+        <a asp-action="Index" class="btn btn-primary">View All Packages</a>
+    </div>
+}
