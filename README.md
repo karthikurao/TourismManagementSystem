@@ -2,21 +2,6 @@
 
 A comprehensive web application built with ASP.NET Core 8.0 and Entity Framework Core for managing tourism packages, bookings, and secure payment processing with Stripe integration.
 
----
-
-## ⚠️ Important: Configuration Required
-
-**This repository has been cleaned of sensitive keys and credentials.** Before running the application, you must configure the following:
-
-### 🔑 Required Configuration Steps
-
-1. **Stripe API Keys** - Configure in `TourismManagementSystem/appsettings.json`
-2. **Admin Credentials** - Review/modify in `TourismManagementSystem/Data/RoleSeeder.cs`
-
-See the [Configuration](#configuration) section below for detailed instructions.
-
----
-
 ## Table of Contents
 
 - [Features](#features)
