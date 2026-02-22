@@ -101,7 +101,9 @@ namespace Tourism.DataAccess
         public TourismDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<TourismDbContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=TourismDb;Trusted_Connection=True;MultipleActiveResultSets=true;");
+            var connectionString = Environment.GetEnvironmentVariable("TOURISMDB_CONNECTION_STRING")
+                ?? "Server=(localdb)\\MSSQLLocalDB;Database=TourismDb;Trusted_Connection=True;MultipleActiveResultSets=true;";
+            optionsBuilder.UseSqlServer(connectionString);
 
             return new TourismDbContext(optionsBuilder.Options);
         }

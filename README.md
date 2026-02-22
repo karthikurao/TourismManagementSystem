@@ -1,5 +1,9 @@
 ﻿# Tourism Management System
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![.NET](https://img.shields.io/badge/.NET-8.0-purple)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 A comprehensive web application built with ASP.NET Core 8.0 and Entity Framework Core for managing tourism packages, bookings, and secure payment processing with Stripe integration.
 
 ## Table of Contents

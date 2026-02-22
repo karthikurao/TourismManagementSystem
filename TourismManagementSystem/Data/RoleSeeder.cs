@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
@@ -26,9 +27,17 @@ namespace TourismManagementSystem.Data
                 }
             }
 
-            // Create default Admin user - CHANGE THESE CREDENTIALS BEFORE DEPLOYMENT
-            string adminEmail = "admin@tourism.com"; // TODO: Change this email
-            string adminPassword = "Admin@123456"; // TODO: Change this password before deployment
+            // Create default Admin user from configuration
+            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            string adminEmail = configuration["AdminSettings:Email"] ?? "";
+            string adminPassword = configuration["AdminSettings:Password"] ?? "";
+
+            if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))
+            {
+                // Skip admin seeding if credentials are not configured; sample packages will still be seeded
+                await SeedSamplePackagesAsync(context);
+                return;
+            }
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
