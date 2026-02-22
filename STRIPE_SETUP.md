@@ -14,17 +14,28 @@
 4. Copy your **Publishable key** and **Secret key** from the test data section
 
 ### 3. Configure Your Application
-1. Open `appsettings.json` in the TourismManagementSystem project
-2. Replace the placeholder keys with your actual Stripe test keys:
 
-```json
-{
-  "Stripe": {
-    "PublishableKey": "pk_test_your_actual_publishable_key_here",
-    "SecretKey": "sk_test_your_actual_secret_key_here"
-  }
-}
+**Option A: Using Environment Variables (Recommended for Production)**
+
+Set the following environment variables:
 ```
+Stripe__PublishableKey=pk_test_your_actual_publishable_key_here
+Stripe__SecretKey=sk_test_your_actual_secret_key_here
+AdminSettings__Email=admin@yourdomain.com
+AdminSettings__Password=YourSecurePassword123!
+```
+
+**Option B: Using .NET User Secrets (Recommended for Development)**
+```bash
+cd TourismManagementSystem
+dotnet user-secrets init
+dotnet user-secrets set "Stripe:PublishableKey" "pk_test_your_actual_publishable_key_here"
+dotnet user-secrets set "Stripe:SecretKey" "sk_test_your_actual_secret_key_here"
+dotnet user-secrets set "AdminSettings:Email" "admin@yourdomain.com"
+dotnet user-secrets set "AdminSettings:Password" "YourSecurePassword123!"
+```
+
+> **⚠️ Important:** Never commit real API keys or passwords to source control. The `appsettings.json` file contains empty placeholders. Always use environment variables or user secrets for sensitive values.
 
 ### 4. Test Credit Card Numbers
 Stripe provides test credit card numbers for testing:
