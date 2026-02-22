@@ -34,7 +34,7 @@ namespace TourismManagementSystem.Data
 
             if (string.IsNullOrEmpty(adminEmail) || string.IsNullOrEmpty(adminPassword))
             {
-                // Skip admin seeding if credentials are not configured
+                // Skip admin seeding if credentials are not configured; sample packages will still be seeded
                 await SeedSamplePackagesAsync(context);
                 return;
             }

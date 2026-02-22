@@ -35,7 +35,7 @@ dotnet user-secrets set "AdminSettings:Email" "admin@yourdomain.com"
 dotnet user-secrets set "AdminSettings:Password" "YourSecurePassword123!"
 ```
 
-> **⚠️ Important:** Never commit real API keys or passwords to source control. The `appsettings.json` file contains empty placeholders. Always use environment variables or user secrets for sensitive values.
+> **⚠️ Important:** Never commit real API keys or passwords to source control. The `appsettings.json` file contains empty placeholders. Always use environment variables or user secrets for sensitive values. Production-specific settings files (e.g., `appsettings.Production.json`) are excluded via `.gitignore`.
 
 ### 4. Test Credit Card Numbers
 Stripe provides test credit card numbers for testing:
